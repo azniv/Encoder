@@ -8,13 +8,17 @@ namespace ConsoleApp18
     {
         static void Main(string[] args)
         {
-            //  Encode();
-            
-            byte[] b = Encode("dude");
-            string message = Decode(b);
-            Console.WriteLine(message);
-           
 
+
+            byte[] payload = Encode("du");
+            string s = Decode(payload);
+            Console.WriteLine(s);
+            foreach (var item in payload)
+            {
+                Console.WriteLine(item);
+            }
+           
+       //  Console.WriteLine(ToBinary(ByteArray("dude")));
         }
         public static byte[] ByteArray(string message)
         {
@@ -24,16 +28,16 @@ namespace ConsoleApp18
         
         public static byte[] Encode(string message)
         {
-            byte[] messageByte = ByteArray(message);
+            //byte[] messageByte = ByteArray(message);
 
-            string messageString = ToBinary(messageByte);
+            string messageString = ToBinary((ByteArray(message)));
 
             return Encoding.UTF8.GetBytes(messageString);
         }
 
         public static string Decode(byte[] peylod)
         {
-             return string.Join("\n", peylod.Select(byt => Convert.ToString(byt, 2).PadLeft(8, '0')));
+             return string.Join("\n", peylod.Select(byt => Convert.ToString(byt, 2)));
         }
 
 
@@ -42,24 +46,23 @@ namespace ConsoleApp18
         public static string ToBinary(byte[] peylod)
         {
             StringBuilder s = new StringBuilder();
-           
-            string str1 = Convert.ToString(peylod[1], 2).ToString();
-
-            s.Append(Convert.ToString(peylod[0], 2).PadLeft(8, str1[6]).ToString()+ "\n");
-            string str2= "a";
-           
-            for (int i = 1; i< peylod.Length; i++)
+            string str1 = null;
+            string str2 = null;
+         
+            for (int i = 0; i< peylod.Length; i++)
             {
-                str2 = Convert.ToString(peylod[i], 2).Substring(7 - i, i);
-                str1 = Convert.ToString(peylod[i], 2).Shift(i).PadLeft(8, '0').ToString();
-                
-             
-                 
-              
-                s.Append(str1 + "\n");
-             
+
+
+                str1 = Convert.ToString(peylod[i], 2);  // tostring 
+                if (i + 1 < peylod.Length)
+                    str2 = Convert.ToString(peylod[i + 1], 2);  // tostring 
+                else
+                    str2 = "0000000";                                                             
+                str1 = str2.Substring(6 - i)   + str1.Substring(0, 7-i);
+                s.Append(str1 );
+                str1 = str2; 
             }
-           
+         
             return s.ToString();
 
 
@@ -73,6 +76,7 @@ namespace ConsoleApp18
         {
            return s.Remove(7-count, count);
         }
+
     }
 
 }
